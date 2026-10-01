@@ -48,7 +48,7 @@ class PlatformTests(unittest.TestCase):
         self.assertFalse((self.home / '.local/bin/ts').exists())
 
     def test_create_session_without_directory(self):
-        self.tool('fzf', "printf 'new-session\\nctrl-n\\n'\n")
+        self.tool('fzf', "cat >/dev/null\nprintf 'new-session\\nctrl-n\\n'\n")
         self.tool('tmux', '''case "$1" in
   list-sessions) exit 1 ;;
   new-session) printf '%s\\n' "$@" > "$HOME/tmux-args" ;;
@@ -63,7 +63,8 @@ esac
         presets = self.home / '.config/fleetmux/presets'
         presets.mkdir(parents=True)
         (presets / 'demo.conf').write_text('window=editor:\nwindow=logs:\n')
-        self.tool('fzf', '''case "$*" in
+        self.tool('fzf', '''cat >/dev/null
+case "$*" in
   *"preset > "*) printf 'demo\\n' ;;
   *) printf '\\nctrl-p\\n' ;;
 esac
