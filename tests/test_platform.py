@@ -73,7 +73,9 @@ esac
   *) printf '%s\\n' "$*" >> "$HOME/tmux-args" ;;
 esac
 ''')
-        self.run_script('bin/tmux-sessions')
+        result = self.run_script('bin/tmux-sessions')
+        self.assertTrue((self.home / 'tmux-args').exists(),
+                        f"stdout={result.stdout!r}, stderr={result.stderr!r}")
         self.assertEqual((self.home / 'tmux-args').read_text().splitlines(), [
             'new-session -d -s demo -n editor',
             'new-window -t =demo -n logs',
