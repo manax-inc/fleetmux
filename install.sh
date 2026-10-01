@@ -105,9 +105,20 @@ for dep in tmux fzf; do
   command -v "$dep" >/dev/null 2>&1 || missing+=("$dep")
 done
 if ((${#missing[@]})); then
-  echo "$MSG_MISSING_DEPS: ${missing[*]}" >&2
-  echo "$MSG_INSTALL_HINT ${missing[*]}" >&2
-  exit 1
+  # Homebrew needs no sudo and supports both macOS and Linux.
+  if command -v brew >/dev/null 2>&1; then
+    echo "$MSG_INSTALLING ${missing[*]} (Homebrew)"
+    brew install "${missing[@]}"
+  fi
+  missing=()
+  for dep in tmux fzf; do
+    command -v "$dep" >/dev/null 2>&1 || missing+=("$dep")
+  done
+  if ((${#missing[@]})); then
+    echo "$MSG_MISSING_DEPS: ${missing[*]}" >&2
+    echo "$MSG_INSTALL_HINT ${missing[*]}" >&2
+    exit 1
+  fi
 fi
 
 # ── Install scripts (always overwrite existing files) ───────

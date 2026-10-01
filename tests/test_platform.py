@@ -59,6 +59,17 @@ esac
         self.assertEqual((self.home / 'tmux-args').read_text().splitlines(),
                          ['new-session', '-s', 'new-session'])
 
+    def test_installs_only_missing_required_dependencies(self):
+        (self.tools / 'fzf').unlink()
+        self.tool('brew', '''printf '%s\\n' "$*" > "$HOME/brew-args"
+printf '#!/bin/bash\\nexit 130\\n' > "$HOME/tools/fzf"
+chmod +x "$HOME/tools/fzf"
+''')
+        self.run_script('install.sh')
+        self.assertEqual((self.home / 'brew-args').read_text(), 'install fzf\n')
+        self.run_script('install.sh')
+        self.assertEqual((self.home / 'brew-args').read_text(), 'install fzf\n')
+
     def test_preset_without_root(self):
         presets = self.home / '.config/fleetmux/presets'
         presets.mkdir(parents=True)

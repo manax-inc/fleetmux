@@ -46,6 +46,8 @@ then (safe to re-run):
 - Adds the `M-q` popup binding to `~/.tmux.conf` (managed marker block)
 - Optionally registers Claude Code hooks for agent-status reporting (asks y/N)
 - Offers to install missing optional tools (asks per tool, sudo-free)
+- Automatically installs missing required tools (`tmux`, `fzf`) with Homebrew
+  when available; otherwise prints the manual installation command
 - Reloads the config on a running tmux server, if any
 
 ## Picker keys
@@ -116,8 +118,8 @@ Entries appear in the `Alt+q` menu between the built-ins and Exit.
 
 | Kind | Package | Used for | When missing |
 |---|---|---|---|
-| **Required** | `tmux` | everything | installer aborts |
-| **Required** | `fzf` | picker UI | installer aborts |
+| **Required** | `tmux` | everything | installed with Homebrew, otherwise installer aborts |
+| **Required** | `fzf` | picker UI | installed with Homebrew, otherwise installer aborts |
 | Optional | `lazygit` | dev-launcher → Git | menu shows a notice |
 | Optional | `lazydocker` | dev-launcher → Docker | menu shows a notice |
 | Optional | `yazi` | dev-launcher → Files | menu shows a notice |
