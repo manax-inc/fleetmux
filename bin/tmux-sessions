@@ -99,10 +99,10 @@ create_session() {
   local args=()
   [[ -n "$dir" ]] && args=(-c "$dir")
   if $inside_tmux; then
-    tmux new-session -d -s "$name" "${args[@]}"
+    tmux new-session -d -s "$name" ${args[@]+"${args[@]}"}
     tmux switch-client -t "=$name"
   else
-    exec tmux new-session -s "$name" "${args[@]}"
+    exec tmux new-session -s "$name" ${args[@]+"${args[@]}"}
   fi
   exit 0
 }
@@ -322,16 +322,16 @@ create_from_preset() {
     wcmd="${val#*:}"
     [[ "$wcmd" == "$val" ]] && wcmd=""
     if $first; then
-      tmux new-session -d -s "$choice" -n "$wname" "${rootargs[@]}"
+      tmux new-session -d -s "$choice" -n "$wname" ${rootargs[@]+"${rootargs[@]}"}
       first=false
     else
-      tmux new-window -t "=$choice" -n "$wname" "${rootargs[@]}"
+      tmux new-window -t "=$choice" -n "$wname" ${rootargs[@]+"${rootargs[@]}"}
     fi
     [[ -n "$wcmd" ]] && tmux send-keys -t "=$choice:$wname" "$wcmd" Enter
   done <"$conf"
 
   # Preset with no window lines: plain session at root
-  $first && tmux new-session -d -s "$choice" "${rootargs[@]}"
+  $first && tmux new-session -d -s "$choice" ${rootargs[@]+"${rootargs[@]}"}
   goto_session "$choice"
 }
 
