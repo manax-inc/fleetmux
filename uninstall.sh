@@ -14,7 +14,11 @@ rm -rf "$STATE_DIR"
 echo "✓ Removed executables"
 
 if [[ -f "$TMUX_CONF" ]] && grep -qF "$MARK_BEGIN" "$TMUX_CONF"; then
-  sed -i "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    sed -i '' "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  else
+    sed -i "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  fi
   echo "✓ Removed tmux.conf binding"
   if tmux info >/dev/null 2>&1; then
     tmux unbind-key -n M-q 2>/dev/null || true

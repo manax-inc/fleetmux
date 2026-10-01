@@ -93,6 +93,10 @@ else
   MSG_CLAUDE_HOOKS_FAIL="✗ Failed to register Claude Code hooks (python3 required)"
 fi
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  MSG_INSTALL_HINT="brew install"
+fi
+
 echo "$MSG_LANG_SAVED: $TSK_LANG ($CONFIG_FILE)"
 
 # ── Dependency check ────────────────────────────────────────
@@ -117,10 +121,18 @@ echo "$MSG_INSTALLED: $BIN_DIR/tmux-sessions, $BIN_DIR/dev-launcher, $BIN_DIR/fl
 # ── tmux.conf binding (remove old kit block, then append) ───
 touch "$TMUX_CONF"
 if grep -qF "$MARK_BEGIN" "$TMUX_CONF"; then
-  sed -i "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    sed -i '' "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  else
+    sed -i "/^$MARK_BEGIN\$/,/^$MARK_END\$/d" "$TMUX_CONF"
+  fi
 fi
 if grep -qF "$OLD_MARK_BEGIN" "$TMUX_CONF"; then
-  sed -i "/^$OLD_MARK_BEGIN\$/,/^$OLD_MARK_END\$/d" "$TMUX_CONF"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    sed -i '' "/^$OLD_MARK_BEGIN\$/,/^$OLD_MARK_END\$/d" "$TMUX_CONF"
+  else
+    sed -i "/^$OLD_MARK_BEGIN\$/,/^$OLD_MARK_END\$/d" "$TMUX_CONF"
+  fi
 fi
 cat >>"$TMUX_CONF" <<EOF
 $MARK_BEGIN
@@ -214,6 +226,11 @@ install_optional() {
   if command -v brew >/dev/null 2>&1 && [[ "$tool" != "claude" ]]; then
     brew install "$tool"
     return
+  fi
+  # The release fallback below contains Linux binaries only. On macOS,
+  # use Homebrew for these tools; Claude's official installer supports both.
+  if [[ "$(uname -s)" != "Linux" && "$tool" != "claude" ]]; then
+    return 1
   fi
   tmp=$(mktemp -d)
   trap 'rm -rf "$tmp"' RETURN

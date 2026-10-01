@@ -33,7 +33,7 @@ plain bash + tmux + fzf. No Electron, no daemon, no wrapper around your agent.
 ## Install
 
 ```bash
-git clone https://github.com/tmxhfwl/fleetmux.git
+git clone https://github.com/manax-inc/fleetmux.git
 cd fleetmux
 ./install.sh
 ```
@@ -132,6 +132,12 @@ sudo apt install tmux fzf
 # macOS
 brew install tmux fzf
 ```
+
+Linux and macOS are supported, including the Bash 3.2 shipped with macOS.
+On macOS, install optional launcher tools with Homebrew; the automatic
+release-binary fallback is Linux-only. Add `~/.local/bin` to your shell's
+PATH as prompted by the installer. In iTerm2, set Option to Esc+ if you
+want to use the `Alt+q` launcher binding.
 
 ## Configuration
 

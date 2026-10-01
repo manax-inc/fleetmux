@@ -7,10 +7,16 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Syntax check
         run: bash -n bin/* install.sh uninstall.sh
       - name: ShellCheck
+        if: runner.os == 'Linux'
         run: shellcheck -S warning bin/* install.sh uninstall.sh
+      - name: Platform regression tests
+        run: python3 -m unittest discover -s tests -v
